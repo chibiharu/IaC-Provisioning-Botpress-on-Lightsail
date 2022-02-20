@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  "Launch a PJ-chibiBot-Botpress-Service-to-Lightsail"
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Parameters:
+          - InstanceName
+          - InstanceType
+          - ImageType
+          - AvailabilityZone
+          - SIPName
+          
+          
+# ------------------------------------------------------------#
+# Parameters
+# ------------------------------------------------------------# 
+Parameters:
+  PJPrefix:
+    Type: "String"
+  InstanceName:
+    Type: "String"
+    Description: "Enter the name of your lightsail instance."
+    Default: "prod-chibi-botpress-server"
+  InstanceType:
+    Type: "String"
+    Description: "Allowed Lightsail instance type."
+    Default: "nano_2_0"
+    ConstraintDescription: "Please choose a valid instance type."
+  ImageType:
+    Type: "String"
+    Description: "Allowed Lightsail Images."
+    Default: "nginx"
+    ConstraintDescription: "Please choose a valid OS image type."
+  AvailabilityZone:
+    Type: "String"
+    Description: "Select the AZ where you want to run the instance."
+    Default: "ap-northeast-1a"
+  SIPName:
+    Type: "String"
+    Description: "Enter the name of your lightsail StaticIp"
+    Default: "SIP-prod-chibi-botpress-server"
+    
+    
+### Resources ###
+Resources:
+# ------------------------------------------------------------#
+# Lightsail Instace
+# ------------------------------------------------------------# 
+  # Lightsailインスタンスの作成
+  LightsailInstance:
+    Type: "AWS::Lightsail::Instance"
+    Properties:
+      # インスタンスを実行するAZ
+      AvailabilityZone: !Ref "AvailabilityZone"
+      # 自動スナップショットの作成を有効にする
+      AddOns:
+        - AddOnType: "AutoSnapshot"
+          # デフォルトでは有効にしておく
+          Status: "Disabled"
+      # 立ち上げるOSイメージ
+      BlueprintId: !Ref "ImageType"
+      # インスタンスのサイズ
+      BundleId: !Ref "InstanceType"
+      # インスタンスの名前
+      InstanceName: !Ref "InstanceName"
+      
+      ## Lightsailのファイアウォール設定。 必要に応じて更新してください。
+      ## ポートとIPアドレスから許可リストを作成
+      ## https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lightsail-instance-port.html
+      #Port:
+      #  AccessDirection: String
+      #  AccessFrom: String
+      #  AccessType: String
+      #  CidrListAliases: 
+      #    - String
+      #  Cidrs: 
+      #    - String
+      #  CommonName: String
+      #  FromPort: Integer
+      #  Ipv6Cidrs: 
+      #    - String
+      #  Protocol: String
+      #  ToPort: Integer
+      
+      
+# ------------------------------------------------------------#
+# Lightsail StaticIp
+# ------------------------------------------------------------# 
+  StaticIP:
+    Type: AWS::Lightsail::StaticIp
+    Properties: 
+      AttachedTo: !Ref LightsailInstance
+      StaticIpName: !Ref SIPName
+      
+      
+# ------------------------------------------------------------#
+# Output Parameter
+# ------------------------------------------------------------# 
+Outputs:
+### StaticIPAddress ###
+  StaticIP:
+    Value: !GetAtt StaticIP.IpAddress
+    Export:
+      Name: !Sub "${PJPrefix}-Lightsail-StaticIP"

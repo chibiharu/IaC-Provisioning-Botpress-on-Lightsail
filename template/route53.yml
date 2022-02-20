@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Launch a PJ-chibiBot-Botpress-Service-to-Route53"
+
+# ------------------------------------------------------------
+#  Metadate
+# ------------------------------------------------------------
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Parameters:
+          - PJPrefix
+          - HostedZoneID
+          - SubDomain
+          
+          
+# ------------------------------------------------------------
+# Input Parameters
+# ------------------------------------------------------------
+Parameters:
+### Project Prefix ###
+  PJPrefix:
+    Type: String
+### Hosted Zone ###
+  HostedZoneID:
+    Type: String
+    Default: 'Z0667777J1NLLCG5B1EI'
+  SubDomain:
+    Type: String
+    Default: 'chibibotpress.chibinfra-itech.com'
+    
+    
+### Resources ###
+Resources: 
+# ------------------------------------------------------------
+#  Route53
+# ------------------------------------------------------------
+### Alias ALB ARN ###
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneID
+      Comment: "Add New RecordSet"
+      Name: !Ref SubDomain
+      Type: A
+      TTL: '300'
+      ResourceRecords:
+        - { "Fn::ImportValue": !Sub "${PJPrefix}-Lightsail-StaticIP" }
