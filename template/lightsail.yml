@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description:
-  "Launch a PJ-chibiBot-Botpress-Service-to-Lightsail"
+  "Launch a Botpress-Env-to-Lightsail"
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -22,7 +22,7 @@ Parameters:
   InstanceName:
     Type: "String"
     Description: "Enter the name of your lightsail instance."
-    Default: "prod-chibi-botpress-server"
+    Default: "botpress-server"
   InstanceType:
     Type: "String"
     Description: "Allowed Lightsail instance type."
@@ -40,7 +40,7 @@ Parameters:
   SIPName:
     Type: "String"
     Description: "Enter the name of your lightsail StaticIp"
-    Default: "SIP-prod-chibi-botpress-server"
+    Default: "SIP-botpress-server"
     
     
 ### Resources ###

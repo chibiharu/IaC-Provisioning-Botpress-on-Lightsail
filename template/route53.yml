@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Launch a PJ-chibiBot-Botpress-Service-to-Route53"
+Description: "Launch a Botpress-Env-to-Route53"
 
 # ------------------------------------------------------------
 #  Metadate
@@ -23,10 +23,10 @@ Parameters:
 ### Hosted Zone ###
   HostedZoneID:
     Type: String
-    Default: 'Z0667777J1NLLCG5B1EI'
+    Default: '<ホストゾーンIDを記載>'
   SubDomain:
     Type: String
-    Default: 'chibibotpress.chibinfra-itech.com'
+    Default: '<サブドメイン>.<ドメイン>(例：www.example.com)'
     
     
 ### Resources ###
